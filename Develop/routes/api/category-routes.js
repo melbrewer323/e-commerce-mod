@@ -47,10 +47,45 @@ router.post('/', async (req, res) => {
 
 // update a category by its `id` value
 router.put('/:id', (req, res) => {
+  Book.update(
+    // All the fields you can update and the data attached to the request body.
+    {
+      shirts: req.body.shirts,
+      shorts: req.body.shorts,
+      music: req.body.music,
+      hats: req.body.hats,
+      shoes: req.body.shoes,
+    },
+    {
+        where: {
+        isbn: req.params.isbn,
+      },
+    }
+  )
+    .then((updatedCategory) => {
+      res.json(updatedCategory);
+    })
+    .catch((err) => res.json(err));
 });
 
 // delete a category by its `id` value
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
+  try {
+    const categoryData = await Category.destroy({
+      where: {
+        id: req.params.id
+      }
+    });
+
+    if (!categoryData) {
+      res.status(404).json({ message: 'No category found with this id!' });
+      return;
+    }
+
+    res.status(200).json(categoryData);
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
 
 module.exports = router;
