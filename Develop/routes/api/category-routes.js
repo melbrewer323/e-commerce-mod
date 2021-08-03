@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
   // be sure to include its associated Products
 router.get('/:id', async (req, res) => {
   try {
-    const categoryData = await Category.findbyPk(req.params.id, {
+    const categoryData = await Category.findByPk(req.params.id, {
       include: [{ model: Product }]
     });
     if (!categoryData) {
@@ -29,6 +29,7 @@ router.get('/:id', async (req, res) => {
     }
     res.status(200).json(categoryData);
   } catch (err) {
+    console.log(err);
     res.status(500).json(err);
   }
 });
@@ -47,15 +48,9 @@ router.post('/', async (req, res) => {
 
 // update a category by its `id` value
 router.put('/:id', (req, res) => {
-  Book.update(
+  Category.update(
     // All the fields you can update and the data attached to the request body.
-    {
-      shirts: req.body.shirts,
-      shorts: req.body.shorts,
-      music: req.body.music,
-      hats: req.body.hats,
-      shoes: req.body.shoes,
-    },
+    req.body,
     {
         where: {
         id: req.params.id,
